@@ -3,7 +3,7 @@ package com.example.lab3.web.controller
 import com.example.lab3.application.service.UserService
 import com.example.lab3.web.dto.*
 import com.example.lab3.web.exception.NotFoundException
-import jakarta.validation.Valid
+import com.example.lab3.web.exception.ValidationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -21,7 +21,12 @@ class UserController(
         }
 
     @PostMapping
-    fun createUser(@Valid @RequestBody req: UserCreateRequest): ResponseEntity<UserResponse> {
+    fun createUser(@RequestBody req: UserCreateRequest): ResponseEntity<UserResponse> {
+        // Проверка на пустые поля
+        if (req.email.isBlank() || req.firstName.isBlank() || req.lastName.isBlank()) {
+            throw ValidationException("Invalid user data")
+        }
+
         val (user, created) = service.createOrGet(
             req.email, req.firstName, req.lastName, req.isActive ?: true
         )
@@ -41,7 +46,12 @@ class UserController(
     }
 
     @PutMapping("/{id}")
-    fun updateUser(@PathVariable id: Long, @Valid @RequestBody req: UserUpdateRequest): UserResponse {
+    fun updateUser(@PathVariable id: Long, @RequestBody req: UserUpdateRequest): UserResponse {
+        // Можно добавить валидацию на пустые поля при обновлении
+        if (req.email.isNullOrBlank() || req.firstName.isNullOrBlank() || req.lastName.isNullOrBlank()) {
+            throw ValidationException("Invalid user data")
+        }
+
         val user = service.update(id, req.email, req.firstName, req.lastName, req.isActive)
         return UserResponse(user.id, user.email, user.firstName, user.lastName, user.isActive)
     }
