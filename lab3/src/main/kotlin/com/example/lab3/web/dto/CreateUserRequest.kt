@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 
 data class CreateUserRequest(
-     @field:Email(message = "Email некорректен")
+    @field:Email(message = "Email некорректен")
     @field:NotBlank(message = "Email не может быть пустым")
     val email: String,
 

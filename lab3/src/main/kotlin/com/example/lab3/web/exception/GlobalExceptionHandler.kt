@@ -1,56 +1,56 @@
 package com.example.lab3.web.exception
 
-import com.example.lab3.web.dto.ErrorResponse
-import org.springframework.http.HttpStatus
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import java.time.Instant
-import jakarta.servlet.http.HttpServletRequest
+import java.time.LocalDateTime
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException::class)
-    fun handleNotFound(ex: NotFoundException, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            ErrorResponse(
-                timestamp = Instant.now().toString(),
-                status = HttpStatus.NOT_FOUND.value(),
-                error = "Not Found",
-                message = ex.message ?: "Not found",
-                path = request.requestURI
-            )
+    fun handleNotFound(
+        ex: NotFoundException,
+        request: HttpServletRequest
+    ): ResponseEntity<Map<String, Any?>> {
+        val body = mapOf(
+            "timestamp" to LocalDateTime.now(),
+            "status" to 404,
+            "error" to "Not Found",
+            "message" to (ex.message ?: "Resource not found"),
+            "path" to request.requestURI
         )
+        return ResponseEntity.status(404).body(body)
     }
 
     @ExceptionHandler(ValidationException::class)
-    fun handleValidation(ex: ValidationException, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-            ErrorResponse(
-                timestamp = Instant.now().toString(),
-                status = HttpStatus.BAD_REQUEST.value(),
-                error = "Bad Request",
-                message = ex.message ?: "Invalid user data",
-                path = request.requestURI
-            )
+    fun handleValidation(
+        ex: ValidationException,
+        request: HttpServletRequest
+    ): ResponseEntity<Map<String, Any?>> {
+        val body = mapOf(
+            "timestamp" to LocalDateTime.now(),
+            "status" to 400,
+            "error" to "Bad Request",
+            "message" to (ex.message ?: "Validation error"),
+            "path" to request.requestURI
         )
+        return ResponseEntity.badRequest().body(body)
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
-        val errorMessage = ex.bindingResult.allErrors.firstOrNull()?.defaultMessage
-            ?: "Invalid user data"
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-            ErrorResponse(
-                timestamp = Instant.now().toString(),
-                status = HttpStatus.BAD_REQUEST.value(),
-                error = "Bad Request",
-                message = errorMessage,
-                path = request.requestURI
-            )
+    @ExceptionHandler(Exception::class)
+    fun handleOther(
+        ex: Exception,
+        request: HttpServletRequest
+    ): ResponseEntity<Map<String, Any?>> {
+        val body = mapOf(
+            "timestamp" to LocalDateTime.now(),
+            "status" to 500,
+            "error" to "Internal Server Error",
+            "message" to (ex.message ?: "Unexpected error"),
+            "path" to request.requestURI
         )
+        return ResponseEntity.status(500).body(body)
     }
 }
