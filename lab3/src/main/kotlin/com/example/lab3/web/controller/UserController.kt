@@ -3,7 +3,7 @@ package com.example.lab3.web.controller
 import com.example.lab3.application.service.UserService
 import com.example.lab3.web.dto.*
 import com.example.lab3.web.exception.NotFoundException
-import com.example.lab3.web.exception.ValidationException
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -21,10 +21,7 @@ class UserController(
         }
 
     @PostMapping
-    fun createUser(@RequestBody req: UserCreateRequest): ResponseEntity<UserResponse> {
-        if (req.email.isBlank() || req.firstName.isBlank() || req.lastName.isBlank())
-            throw ValidationException("Invalid user data")
-
+    fun createUser(@Valid @RequestBody req: UserCreateRequest): ResponseEntity<UserResponse> {
         val (user, created) = service.createOrGet(
             req.email, req.firstName, req.lastName, req.isActive ?: true
         )
@@ -44,7 +41,7 @@ class UserController(
     }
 
     @PutMapping("/{id}")
-    fun updateUser(@PathVariable id: Long, @RequestBody req: UserUpdateRequest): UserResponse {
+    fun updateUser(@PathVariable id: Long, @Valid @RequestBody req: UserUpdateRequest): UserResponse {
         val user = service.update(id, req.email, req.firstName, req.lastName, req.isActive)
         return UserResponse(user.id, user.email, user.firstName, user.lastName, user.isActive)
     }
