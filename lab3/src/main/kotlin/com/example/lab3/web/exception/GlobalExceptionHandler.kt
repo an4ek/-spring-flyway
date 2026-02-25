@@ -1,56 +1,59 @@
 package com.example.lab3.web.exception
 
-import jakarta.servlet.http.HttpServletRequest
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.RestControllerAdvice
-import java.time.LocalDateTime
+import org.springframework.web.bind.MethodArgumentNotValidException
 
-@RestControllerAdvice
+data class ErrorResponse(
+    val status: Int,
+    val error: String,
+    val message: String
+)
+
+@ControllerAdvice
 class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundException::class)
-    fun handleNotFound(
-        ex: NotFoundException,
-        request: HttpServletRequest
-    ): ResponseEntity<Map<String, Any?>> {
-        val body = mapOf(
-            "timestamp" to LocalDateTime.now(),
-            "status" to 404,
-            "error" to "Not Found",
-            "message" to (ex.message ?: "Resource not found"),
-            "path" to request.requestURI
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleInvalidJson(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity(
+            ErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase, ex.message ?: "Invalid request body"),
+            HttpStatus.BAD_REQUEST
         )
-        return ResponseEntity.status(404).body(body)
     }
 
-    @ExceptionHandler(ValidationException::class)
-    fun handleValidation(
-        ex: ValidationException,
-        request: HttpServletRequest
-    ): ResponseEntity<Map<String, Any?>> {
-        val body = mapOf(
-            "timestamp" to LocalDateTime.now(),
-            "status" to 400,
-            "error" to "Bad Request",
-            "message" to (ex.message ?: "Validation error"),
-            "path" to request.requestURI
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+        val message = ex.bindingResult.fieldErrors.joinToString { it.defaultMessage ?: it.field }
+        return ResponseEntity(
+            ErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase, message),
+            HttpStatus.BAD_REQUEST
         )
-        return ResponseEntity.badRequest().body(body)
+    }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgument(ex: IllegalArgumentException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity(
+            ErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase, ex.message ?: "Invalid request"),
+            HttpStatus.BAD_REQUEST
+        )
+    }
+
+    @ExceptionHandler(com.example.lab3.web.exception.NotFoundException::class)
+    fun handleNotFound(ex: com.example.lab3.web.exception.NotFoundException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity(
+            ErrorResponse(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.reasonPhrase, ex.message ?: "Not found"),
+            HttpStatus.NOT_FOUND
+        )
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleOther(
-        ex: Exception,
-        request: HttpServletRequest
-    ): ResponseEntity<Map<String, Any?>> {
-        val body = mapOf(
-            "timestamp" to LocalDateTime.now(),
-            "status" to 500,
-            "error" to "Internal Server Error",
-            "message" to (ex.message ?: "Unexpected error"),
-            "path" to request.requestURI
+    fun handleOther(ex: Exception): ResponseEntity<ErrorResponse> {
+        return ResponseEntity(
+            ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase, ex.message ?: "Internal server error"),
+            HttpStatus.INTERNAL_SERVER_ERROR
         )
-        return ResponseEntity.status(500).body(body)
     }
 }

@@ -1,59 +1,62 @@
 package com.example.lab3.web.controller
 
 import com.example.lab3.application.service.UserService
-import com.example.lab3.web.dto.*
-import com.example.lab3.web.exception.NotFoundException
-import com.example.lab3.web.exception.ValidationException
+import com.example.lab3.domain.model.User
+import com.example.lab3.web.dto.CreateUserRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import jakarta.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/users")
-@Validated
 class UserController(
-    private val service: UserService
+    private val userService: UserService
 ) {
 
     @GetMapping
-    fun listUsers(): List<UserResponse> =
-        service.list().map {
-            UserResponse(it.id, it.email, it.firstName, it.lastName, it.isActive)
-        }
-
-    @PostMapping
-    fun createUser(@Valid @RequestBody req: CreateUserRequest): ResponseEntity<UserResponse> {
-
-        val (user, created) = service.createOrGet(
-            req.email, req.firstName, req.lastName, req.isActive ?: true
-        )
-
-        val response = UserResponse(user.id, user.email, user.firstName, user.lastName, user.isActive)
-
-        return if (created)
-            ResponseEntity.status(HttpStatus.CREATED).body(response)
-        else
-            ResponseEntity.ok(response)
-    }
+    fun list(): List<User> = userService.list()
 
     @GetMapping("/{id}")
-    fun getUser(@PathVariable id: Long): UserResponse {
-        val user = service.getById(id) ?: throw NotFoundException("User with id=$id not found")
-        return UserResponse(user.id, user.email, user.firstName, user.lastName, user.isActive)
+    fun get(@PathVariable id: Long): ResponseEntity<Any> =
+        userService.getById(id)?.let { ResponseEntity.ok(it) }
+            ?: ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(mapOf("status" to 404, "error" to "Not Found", "message" to "User not found"))
+
+    @PostMapping
+    fun createUser(@RequestBody req: CreateUserRequest): ResponseEntity<Any> {
+        if (req.email.isNullOrBlank() || req.firstName.isNullOrBlank() || req.lastName.isNullOrBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(mapOf("status" to 400, "error" to "Bad Request", "message" to "email, firstName и lastName обязательны"))
+        }
+
+        val (user, created) = userService.createOrGet(
+            req.email, req.firstName, req.lastName, req.isActive
+        )
+        return ResponseEntity.status(if (created) 201 else 200).body(user)
     }
 
     @PutMapping("/{id}")
-    fun updateUser(@PathVariable id: Long, @Valid @RequestBody req: CreateUserRequest): UserResponse {
-        val user = service.update(id, req.email, req.firstName, req.lastName, req.isActive ?: true)
-        return UserResponse(user.id, user.email, user.firstName, user.lastName, user.isActive)
+    fun update(@PathVariable id: Long, @RequestBody req: CreateUserRequest): ResponseEntity<Any> {
+        if (req.email.isNullOrBlank() || req.firstName.isNullOrBlank() || req.lastName.isNullOrBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(mapOf("status" to 400, "error" to "Bad Request", "message" to "email, firstName и lastName обязательны"))
+        }
+
+        return try {
+            val updated = userService.update(id, req.email, req.firstName, req.lastName, req.isActive)
+            ResponseEntity.ok(updated)
+        } catch (e: RuntimeException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(mapOf("status" to 404, "error" to "Not Found", "message" to e.message))
+        }
     }
 
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable id: Long): ResponseEntity<Void> {
-        if (!service.delete(id))
-            throw NotFoundException("User with id=$id not found")
-        return ResponseEntity.noContent().build()
+    fun delete(@PathVariable id: Long): ResponseEntity<Any> {
+        return if (userService.delete(id))
+            ResponseEntity.noContent().build()
+        else
+            ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(mapOf("status" to 404, "error" to "Not Found", "message" to "User not found"))
     }
 }

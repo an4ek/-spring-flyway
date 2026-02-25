@@ -3,38 +3,38 @@ package com.example.lab3.application.service
 import com.example.lab3.domain.model.Dish
 import com.example.lab3.domain.port.DishRepositoryPort
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 
 @Service
-class DishService(
-    private val repository: DishRepositoryPort
-) {
+class DishService(private val dishRepository: DishRepositoryPort) {
 
-    fun list(namePart: String?): List<Dish> = repository.findAll(namePart)
+    fun findAll(): List<Dish> = dishRepository.findAll()
 
-    fun getById(id: Long): Dish? = repository.findById(id)
+    fun searchByName(namePart: String): List<Dish> = dishRepository.searchByName(namePart)
 
-    fun createOrGet(name: String, description: String, price: Double, isAvailable: Boolean): Pair<Dish, Boolean> {
-        val existing = repository.findByName(name)
-        if (existing != null) return existing to false
+    fun findById(id: Long): Dish? = dishRepository.findById(id)
 
-        val created = repository.create(
-            Dish(0, name, description, BigDecimal.valueOf(price), isAvailable)
-        )
-        return created to true
+    fun createOrFind(dish: Dish): Pair<Dish, Boolean> {
+        val existing = dishRepository.searchByName(dish.name)
+            .firstOrNull { it.name.equals(dish.name, ignoreCase = true) }
+        return if (existing != null) {
+            Pair(existing, false)
+        } else {
+            Pair(dishRepository.create(dish), true)
+        }
     }
 
-    fun update(id: Long, name: String, description: String, price: Double, isAvailable: Boolean): Dish {
-        val existing = repository.findById(id) ?: throw RuntimeException("NOT_FOUND")
-        return repository.update(
-            existing.copy(
-                name = name,
-                description = description,
-                price = BigDecimal.valueOf(price),
-                isAvailable = isAvailable
-            )
+    fun create(dish: Dish): Dish = dishRepository.create(dish)
+
+    fun update(id: Long, dish: Dish): Dish {
+        val existing = dishRepository.findById(id) ?: throw RuntimeException("Dish not found")
+        val updated = existing.copy(
+            name = dish.name,
+            description = dish.description,
+            price = dish.price,
+            isAvailable = dish.isAvailable
         )
+        return dishRepository.update(updated)
     }
 
-    fun delete(id: Long): Boolean = repository.delete(id)
+    fun delete(id: Long): Boolean = dishRepository.delete(id)
 }
