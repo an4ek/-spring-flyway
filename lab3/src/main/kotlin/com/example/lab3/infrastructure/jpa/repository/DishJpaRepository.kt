@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface DishJpaRepository : JpaRepository<DishEntity, Long> {
     fun findByNameContainingIgnoreCase(name: String): List<DishEntity>
+    fun findAllByIdIn(ids: List<Long>): List<DishEntity>
 
     @Query("select d from DishEntity d where lower(d.name) like lower(concat('%', :namePart, '%'))")
     fun searchByNameJpql(namePart: String): List<DishEntity>

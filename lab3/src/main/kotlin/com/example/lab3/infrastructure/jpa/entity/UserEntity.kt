@@ -5,13 +5,21 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "users")
-data class UserEntity(
+class UserEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-    val email: String,
-    val firstName: String,
-    val lastName: String,
-    val isActive: Boolean = true
+    var id: Long = 0,
+
+    @Column(nullable = false, unique = true)
+    var email: String,
+
+    @Column(nullable = false)
+    var firstName: String,
+
+    @Column(nullable = false)
+    var lastName: String,
+
+    @Column(nullable = false)
+    var isActive: Boolean = true
 ) {
     fun toDomain(): User = User(id, email, firstName, lastName, isActive)
 }

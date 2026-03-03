@@ -16,6 +16,9 @@ class DishMockRepository : DishRepositoryPort {
     override fun findById(id: Long): Dish? =
         dishes.find { it.id == id }
 
+    override fun findAllByIds(ids: List<Long>): List<Dish> =
+        dishes.filter { it.id in ids }
+
     override fun create(dish: Dish): Dish {
         val newDish = dish.copy(id = nextId++)
         dishes.add(newDish)

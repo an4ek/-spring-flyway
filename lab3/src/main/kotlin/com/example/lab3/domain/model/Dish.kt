@@ -5,5 +5,6 @@ data class Dish(
     val name: String,
     val description: String,
     val price: Double,
-    val isAvailable: Boolean
+    val isAvailable: Boolean,
+    val restaurantId: Long? = null
 )
