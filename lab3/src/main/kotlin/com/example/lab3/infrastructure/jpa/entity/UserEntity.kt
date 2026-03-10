@@ -6,37 +6,20 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "users")
 class UserEntity(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
-
+    @Column(nullable = false, unique = true)
     var email: String,
 
+    @Column(nullable = false)
     var firstName: String,
 
+    @Column(nullable = false)
     var lastName: String,
 
-    var isActive: Boolean
+    @Column(nullable = false)
+    var isActive: Boolean = true
 ) {
-
-    fun toDomain(): User =
-        User(
-            id = this.id ?: 0,
-            email = this.email,
-            firstName = this.firstName,
-            lastName = this.lastName,
-            isActive = this.isActive
-        )
-
-    companion object {
-        fun fromDomain(user: User): UserEntity =
-            UserEntity(
-                id = if (user.id == 0L) null else user.id,
-                email = user.email,
-                firstName = user.firstName,
-                lastName = user.lastName,
-                isActive = user.isActive
-            )
-    }
+    fun toDomain(): User = User(id, email, firstName, lastName, isActive)
 }

@@ -17,14 +17,12 @@ class UserService(
         val existing = repository.findByEmail(email)
         if (existing != null) return existing to false
 
-        val created = repository.create(
-            User(0, email, firstName, lastName, isActive)
-        )
+        val created = repository.create(User(0, email, firstName, lastName, isActive))
         return created to true
     }
 
     fun update(id: Long, email: String, firstName: String, lastName: String, isActive: Boolean): User {
-        val existing = repository.findById(id) ?: throw RuntimeException("NOT_FOUND")
+        val existing = repository.findById(id) ?: throw RuntimeException("User not found")
         return repository.update(existing.copy(email = email, firstName = firstName, lastName = lastName, isActive = isActive))
     }
 
