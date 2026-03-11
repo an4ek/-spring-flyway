@@ -2,39 +2,46 @@ package com.example.lab3.application.service
 
 import com.example.lab3.domain.model.Dish
 import com.example.lab3.domain.port.DishRepositoryPort
+import com.example.lab3.web.exception.NotFoundException
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 
 @Service
-class DishService(
-    private val repository: DishRepositoryPort
-) {
+class DishService(private val dishRepository: DishRepositoryPort) {
 
-    fun list(namePart: String?): List<Dish> = repository.findAll(namePart)
+    private val logger = KotlinLogging.logger {}
 
-    fun getById(id: Long): Dish? = repository.findById(id)
+    fun findAll(): List<Dish> = dishRepository.findAll()
 
-    fun createOrGet(name: String, description: String, price: Double, isAvailable: Boolean): Pair<Dish, Boolean> {
-        val existing = repository.findByName(name)
-        if (existing != null) return existing to false
+    fun searchByName(namePart: String): List<Dish> = dishRepository.searchByName(namePart)
 
-        val created = repository.create(
-            Dish(0, name, description, BigDecimal.valueOf(price), isAvailable)
-        )
-        return created to true
+    fun findById(id: Long): Dish {
+        return dishRepository.findById(id)
+            ?: throw NotFoundException("Блюдо с id=$id не найдено")
     }
 
-    fun update(id: Long, name: String, description: String, price: Double, isAvailable: Boolean): Dish {
-        val existing = repository.findById(id) ?: throw RuntimeException("NOT_FOUND")
-        return repository.update(
-            existing.copy(
-                name = name,
-                description = description,
-                price = BigDecimal.valueOf(price),
-                isAvailable = isAvailable
-            )
-        )
+    fun createOrFind(dish: Dish): Pair<Dish, Boolean> {
+        val existing = dishRepository.searchByName(dish.name)
+            .firstOrNull { it.name.equals(dish.name, ignoreCase = true) }
+        return if (existing != null) {
+            Pair(existing, false)
+        } else {
+            val created = dishRepository.create(dish)
+            logger.info { "Создано блюдо: id=${created.id}, name=${created.name}" }
+            Pair(created, true)
+        }
     }
 
-    fun delete(id: Long): Boolean = repository.delete(id)
+    fun update(id: Long, dish: Dish): Dish {
+        dishRepository.findById(id) ?: throw NotFoundException("Блюдо с id=$id не найдено")
+        val updated = dishRepository.update(dish.copy(id = id))
+        logger.info { "Обновлено блюдо: id=$id" }
+        return updated
+    }
+
+    fun delete(id: Long) {
+        dishRepository.findById(id) ?: throw NotFoundException("Блюдо с id=$id не найдено")
+        dishRepository.delete(id)
+        logger.info { "Удалено блюдо: id=$id" }
+    }
 }
