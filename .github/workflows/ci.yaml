@@ -53,9 +53,9 @@ jobs:
         run: ./mvnw clean package -DskipTests
 
       - name: Run Spring app
-        run: java -jar ./target/*.jar --server.port=${{ env.SERVER_PORT }} &
+        run: java -jar ./target/*.jar --server.port=${{ env.SERVER_PORT }} > app.log 2>&1 &
 
       - name: Run tests
-        run: ./.test/run-test.sh
+        run: ./.test/run-test.sh || (cat app.log && exit 1)
         env:
           BASE_URL: http://localhost:${{ env.SERVER_PORT }}
