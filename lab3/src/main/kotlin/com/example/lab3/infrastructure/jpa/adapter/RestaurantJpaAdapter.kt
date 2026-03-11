@@ -31,18 +31,21 @@ class RestaurantJpaAdapter(
     override fun findById(id: Long): Restaurant? =
         restaurantJpaRepository.findById(id).orElse(null)?.toDomain()
 
+    override fun existsByName(name: String): Boolean =
+    restaurantJpaRepository.findByNameIgnoreCase(name) != null
+
     override fun create(restaurant: Restaurant): Restaurant =
         restaurantJpaRepository.save(
             RestaurantEntity(name = restaurant.name, address = restaurant.address)
         ).toDomain()
 
     override fun update(restaurant: Restaurant): Restaurant {
-        val entity = restaurantJpaRepository.findById(restaurant.id).orElseThrow {
-            RuntimeException("NOT_FOUND")
-        }
-        entity.name = restaurant.name
-        entity.address = restaurant.address
-        return restaurantJpaRepository.save(entity).toDomain()
+    val entity = restaurantJpaRepository.findById(restaurant.id).orElseThrow {
+        RuntimeException("NOT_FOUND")
+    }
+    entity.address = restaurant.address
+    restaurantJpaRepository.save(entity)
+    return restaurant
     }
 
     override fun delete(id: Long): Boolean =

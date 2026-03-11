@@ -1,23 +1,32 @@
 package com.example.lab3.web.dto
 
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+
 data class UserCreateRequest(
-    val email: String,
-    val firstName: String,
-    val lastName: String,
+    @field:Email(message = "Некорректный email")
+    @field:NotBlank(message = "Email обязателен")
+    val email: String?,
+
+    @field:NotBlank(message = "Имя обязательно")
+    val firstName: String?,
+
+    @field:NotBlank(message = "Фамилия обязательна")
+    val lastName: String?,
+
     val isActive: Boolean? = true
 )
 
 data class UserUpdateRequest(
-    val email: String,
-    val firstName: String,
-    val lastName: String,
-    val isActive: Boolean
-)
+    @field:Email(message = "Некорректный email")
+    @field:NotBlank(message = "Email обязателен")
+    val email: String?,
 
-data class UserResponse(
-    val id: Long,
-    val email: String,
-    val firstName: String,
-    val lastName: String,
-    val isActive: Boolean
+    @field:NotBlank(message = "Имя обязательно")
+    val firstName: String?,
+
+    @field:NotBlank(message = "Фамилия обязательна")
+    val lastName: String?,
+
+    val isActive: Boolean? = true
 )

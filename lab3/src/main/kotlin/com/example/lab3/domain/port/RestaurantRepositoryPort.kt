@@ -6,6 +6,7 @@ import com.example.lab3.domain.model.Restaurant
 interface RestaurantRepositoryPort {
     fun findAll(): List<Restaurant>
     fun findById(id: Long): Restaurant?
+    fun existsByName(name: String): Boolean
     fun create(restaurant: Restaurant): Restaurant
     fun update(restaurant: Restaurant): Restaurant
     fun delete(id: Long): Boolean

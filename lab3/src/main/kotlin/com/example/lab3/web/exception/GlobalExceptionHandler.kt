@@ -1,59 +1,70 @@
 package com.example.lab3.web.exception
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
-import org.springframework.web.bind.annotation.ControllerAdvice
-import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.RestControllerAdvice
 
-data class ErrorResponse(
-    val status: Int,
-    val error: String,
-    val message: String
-)
-
-@ControllerAdvice
+@RestControllerAdvice
 class GlobalExceptionHandler {
 
-    @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun handleInvalidJson(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity(
-            ErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase, ex.message ?: "Invalid request body"),
-            HttpStatus.BAD_REQUEST
-        )
+    private val logger = KotlinLogging.logger {}
+
+    @ExceptionHandler(NotFoundException::class)
+    fun handleNotFound(e: NotFoundException): ResponseEntity<ErrorResponse> {
+        logger.warn { "Not found: ${e.message}" }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(ErrorResponse(404, e.message))
+    }
+
+    @ExceptionHandler(AlreadyExistsException::class)
+    fun handleConflict(e: AlreadyExistsException): ResponseEntity<ErrorResponse> {
+        logger.warn { "Conflict: ${e.message}" }
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(ErrorResponse(409, e.message))
+    }
+
+    @ExceptionHandler(InvalidOrderStateException::class)
+    fun handleInvalidOrderState(e: InvalidOrderStateException): ResponseEntity<ErrorResponse> {
+        logger.warn { "Invalid order state: ${e.message}" }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(400, e.message))
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
-        val message = ex.bindingResult.fieldErrors.joinToString { it.defaultMessage ?: it.field }
-        return ResponseEntity(
-            ErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase, message),
-            HttpStatus.BAD_REQUEST
-        )
+    fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<ValidationErrorResponse> {
+        val errors = ex.bindingResult.fieldErrors.associate {
+            it.field to (it.defaultMessage ?: "Invalid value")
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ValidationErrorResponse(400, "Validation error", errors))
     }
 
-    @ExceptionHandler(IllegalArgumentException::class)
-    fun handleIllegalArgument(ex: IllegalArgumentException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity(
-            ErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.reasonPhrase, ex.message ?: "Invalid request"),
-            HttpStatus.BAD_REQUEST
-        )
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintViolation(e: ConstraintViolationException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(400, e.message))
     }
 
-    @ExceptionHandler(com.example.lab3.web.exception.NotFoundException::class)
-    fun handleNotFound(ex: com.example.lab3.web.exception.NotFoundException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity(
-            ErrorResponse(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.reasonPhrase, ex.message ?: "Not found"),
-            HttpStatus.NOT_FOUND
-        )
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleInvalidJson(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(400, "Invalid request body"))
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleOther(ex: Exception): ResponseEntity<ErrorResponse> {
-        return ResponseEntity(
-            ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase, ex.message ?: "Internal server error"),
-            HttpStatus.INTERNAL_SERVER_ERROR
-        )
+    fun handleUnexpected(e: Exception): ResponseEntity<ErrorResponse> {
+        logger.error(e) { "Unexpected error" }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ErrorResponse(500, "Internal server error"))
     }
+    @ExceptionHandler(IllegalArgumentException::class)
+fun handleIllegalArgument(e: IllegalArgumentException): ResponseEntity<ErrorResponse> {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(ErrorResponse(400, e.message))
+}
 }

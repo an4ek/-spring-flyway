@@ -1,0 +1,66 @@
+2026-03-11 01:14:05.876 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h20m4s562ms).
+2026-03-11 01:21:23.568 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=7m17s692ms).
+2026-03-11 03:02:41.126 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h41m17s558ms).
+2026-03-11 04:37:45.298 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h35m4s172ms).
+2026-03-11 05:18:09.457 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=40m24s159ms).
+2026-03-11 05:39:13.175 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=21m3s718ms).
+2026-03-11 07:17:00.379 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h37m47s204ms).
+2026-03-11 07:19:21.087 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m20s708ms).
+2026-03-11 07:52:09.631 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=32m48s544ms).
+2026-03-11 08:00:42.167 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8m32s536ms).
+2026-03-11 08:05:41.670 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-11 08:05:53.869 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Пользователь с id=999999 не найден
+2026-03-11 08:05:54.021 [http-nio-8080-exec-6] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:05:54.121 [http-nio-8080-exec-3] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:05:54.294 [http-nio-8080-exec-8] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:05:54.355 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Блюдо с id=999999 не найдено
+2026-03-11 08:05:54.668 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Invalid order state: Нельзя перевести заказ из DELIVERED в PENDING
+2026-03-11 08:05:54.686 [http-nio-8080-exec-5] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Заказ с id=999999 не найден
+2026-03-11 08:11:05.603 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-11 08:11:11.928 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Пользователь с id=999999 не найден
+2026-03-11 08:11:12.080 [http-nio-8080-exec-6] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:11:12.180 [http-nio-8080-exec-3] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:11:12.353 [http-nio-8080-exec-8] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:11:12.412 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Блюдо с id=999999 не найдено
+2026-03-11 08:11:12.723 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Invalid order state: Нельзя перевести заказ из DELIVERED в PENDING
+2026-03-11 08:11:12.742 [http-nio-8080-exec-5] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Заказ с id=999999 не найден
+2026-03-11 08:11:12.858 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Conflict: Ресторан 'CI-Restaurant-1773191471-49501' уже существует
+2026-03-11 08:20:33.099 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-11 08:20:38.614 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Пользователь с id=999999 не найден
+2026-03-11 08:20:38.767 [http-nio-8080-exec-6] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:20:38.869 [http-nio-8080-exec-3] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:20:39.040 [http-nio-8080-exec-8] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:20:39.102 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Блюдо с id=999999 не найдено
+2026-03-11 08:20:39.404 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Invalid order state: Нельзя перевести заказ из DELIVERED в PENDING
+2026-03-11 08:20:39.423 [http-nio-8080-exec-5] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Заказ с id=999999 не найден
+2026-03-11 08:20:39.540 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Conflict: Ресторан 'CI-Restaurant-1773192038-50359' уже существует
+2026-03-11 08:22:53.422 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-11 08:22:57.996 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Пользователь с id=999999 не найден
+2026-03-11 08:22:58.148 [http-nio-8080-exec-6] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:22:58.248 [http-nio-8080-exec-3] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:22:58.428 [http-nio-8080-exec-8] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:22:58.489 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Блюдо с id=999999 не найдено
+2026-03-11 08:22:58.796 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Invalid order state: Нельзя перевести заказ из DELIVERED в PENDING
+2026-03-11 08:22:58.814 [http-nio-8080-exec-5] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Заказ с id=999999 не найден
+2026-03-11 08:22:58.931 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Conflict: Ресторан 'CI-Restaurant-1773192177-51037' уже существует
+2026-03-11 08:22:59.025 [http-nio-8080-exec-1] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Пользователь с id=999999 не найден
+2026-03-11 08:22:59.045 [http-nio-8080-exec-3] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:22:59.065 [http-nio-8080-exec-5] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Заказ с id=999999 не найден
+2026-03-11 08:22:59.107 [http-nio-8080-exec-9] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Блюдо с id=52 не найдено
+2026-03-11 08:22:59.179 [http-nio-8080-exec-7] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=45 не найден
+2026-03-11 08:22:59.236 [http-nio-8080-exec-3] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Пользователь с id=21 не найден
+2026-03-11 08:32:35.503 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-11 08:32:39.477 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Пользователь с id=999999 не найден
+2026-03-11 08:32:39.628 [http-nio-8080-exec-6] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:32:39.726 [http-nio-8080-exec-3] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:32:39.899 [http-nio-8080-exec-8] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:32:39.959 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Блюдо с id=999999 не найдено
+2026-03-11 08:32:40.263 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Invalid order state: Нельзя перевести заказ из DELIVERED в PENDING
+2026-03-11 08:32:40.282 [http-nio-8080-exec-5] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Заказ с id=999999 не найден
+2026-03-11 08:32:40.400 [http-nio-8080-exec-4] WARN  c.e.l.w.e.GlobalExceptionHandler - Conflict: Ресторан 'CI-Restaurant-1773192759-52028' уже существует
+2026-03-11 08:32:40.494 [http-nio-8080-exec-1] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Пользователь с id=999999 не найден
+2026-03-11 08:32:40.513 [http-nio-8080-exec-3] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-03-11 08:32:40.534 [http-nio-8080-exec-5] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Заказ с id=999999 не найден
+2026-03-11 08:32:40.576 [http-nio-8080-exec-9] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Блюдо с id=55 не найдено
+2026-03-11 08:32:40.646 [http-nio-8080-exec-7] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=47 не найден
+2026-03-11 08:32:40.702 [http-nio-8080-exec-3] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Пользователь с id=22 не найден

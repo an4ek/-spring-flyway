@@ -2,8 +2,8 @@ package com.example.lab3.web.controller
 
 import com.example.lab3.application.service.DishService
 import com.example.lab3.domain.model.Dish
-import com.example.lab3.web.exception.ErrorResponse
-import com.example.lab3.web.exception.NotFoundException
+import com.example.lab3.web.dto.DishUpdateRequest
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -18,46 +18,18 @@ class DishController(private val dishService: DishService) {
         else ResponseEntity.ok(dishService.searchByName(namePart))
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long): ResponseEntity<Any> {
-        val dish = dishService.findById(id)
-        return if (dish != null) {
-            ResponseEntity.ok(dish)
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                ErrorResponse(404, "Not Found", "Dish not found")
-            )
-        }
-    }
-
-    @PostMapping
-    fun create(@RequestBody dish: Dish): ResponseEntity<Dish> {
-        val (result, created) = dishService.createOrFind(dish)
-        return if (created) {
-            ResponseEntity.status(HttpStatus.CREATED).body(result)
-        } else {
-            ResponseEntity.ok(result)
-        }
-    }
+    fun getById(@PathVariable id: Long): ResponseEntity<Dish> =
+        ResponseEntity.ok(dishService.findById(id))
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody dish: Dish): ResponseEntity<Any> {
-        return try {
-            ResponseEntity.ok(dishService.update(id, dish))
-        } catch (ex: RuntimeException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                ErrorResponse(404, "Not Found", "Dish not found")
-            )
-        }
+    fun update(@PathVariable id: Long, @Valid @RequestBody request: DishUpdateRequest): ResponseEntity<Dish> {
+        val dish = Dish(id, request.name ?: "", request.description ?: "", request.price ?: 0.0, request.isAvailable, 0)
+        return ResponseEntity.ok(dishService.update(id, dish))
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long): ResponseEntity<Any> {
-        return if (dishService.delete(id)) {
-            ResponseEntity.noContent().build()
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                ErrorResponse(404, "Not Found", "Dish not found")
-            )
-        }
+    fun delete(@PathVariable id: Long): ResponseEntity<Void> {
+        dishService.delete(id)
+        return ResponseEntity.noContent().build()
     }
 }

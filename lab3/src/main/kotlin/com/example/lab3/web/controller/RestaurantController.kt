@@ -3,73 +3,53 @@ package com.example.lab3.web.controller
 import com.example.lab3.application.service.RestaurantService
 import com.example.lab3.domain.model.Dish
 import com.example.lab3.domain.model.Restaurant
-import com.example.lab3.web.exception.ErrorResponse
+import com.example.lab3.web.dto.DishCreateRequest
+import com.example.lab3.web.dto.RestaurantCreateRequest
+import com.example.lab3.web.dto.RestaurantUpdateRequest
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
-data class RestaurantCreateRequest(val name: String, val address: String)
-data class DishCreateRequest(
-    val name: String, val description: String,
-    val price: Double, val isAvailable: Boolean
-)
 
 @RestController
 @RequestMapping("/api/v1/restaurants")
 class RestaurantController(private val restaurantService: RestaurantService) {
 
     @GetMapping
-    fun getAll(): ResponseEntity<List<Restaurant>> =
-        ResponseEntity.ok(restaurantService.findAll())
+    fun getAll(): ResponseEntity<List<Restaurant>> = ResponseEntity.ok(restaurantService.findAll())
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long): ResponseEntity<Any> {
-        val r = restaurantService.findById(id)
-            ?: return ResponseEntity.status(404).body(ErrorResponse(404, "Not Found", "Restaurant with id=$id not found"))
-        return ResponseEntity.ok(r)
-    }
+    fun getById(@PathVariable id: Long): ResponseEntity<Restaurant> =
+        ResponseEntity.ok(restaurantService.findById(id))
 
     @PostMapping
-    fun create(@RequestBody req: RestaurantCreateRequest): ResponseEntity<Any> {
-        if (req.name.isBlank() || req.address.isBlank())
-            return ResponseEntity.badRequest().body(ErrorResponse(400, "Bad Request", "name and address required"))
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(restaurantService.create(Restaurant(name = req.name, address = req.address)))
+    fun create(@Valid @RequestBody request: RestaurantCreateRequest): ResponseEntity<Restaurant> {
+        val restaurant = Restaurant(0, request.name, request.address)
+        return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.create(restaurant))
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody req: RestaurantCreateRequest): ResponseEntity<Any> {
-        return try {
-            ResponseEntity.ok(restaurantService.update(id, Restaurant(name = req.name, address = req.address)))
-        } catch (e: RuntimeException) {
-            ResponseEntity.status(404).body(ErrorResponse(404, "Not Found", "Restaurant with id=$id not found"))
-        }
+    fun update(@PathVariable id: Long, @Valid @RequestBody request: RestaurantUpdateRequest): ResponseEntity<Restaurant> {
+        val restaurant = Restaurant(id, request.name, request.address)
+        return ResponseEntity.ok(restaurantService.update(id, restaurant))
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long): ResponseEntity<Any> =
-        if (restaurantService.delete(id)) ResponseEntity.noContent().build()
-        else ResponseEntity.status(404).body(ErrorResponse(404, "Not Found", "Restaurant with id=$id not found"))
-
-    @GetMapping("/{id}/dishes")
-    fun getDishes(@PathVariable id: Long): ResponseEntity<Any> {
-        return try {
-            ResponseEntity.ok(restaurantService.findDishes(id))
-        } catch (e: RuntimeException) {
-            ResponseEntity.status(404).body(ErrorResponse(404, "Not Found", "Restaurant with id=$id not found"))
-        }
+    fun delete(@PathVariable id: Long): ResponseEntity<Void> {
+        restaurantService.delete(id)
+        return ResponseEntity.noContent().build()
     }
 
+    @GetMapping("/{id}/dishes")
+    fun getDishes(@PathVariable id: Long): ResponseEntity<List<Dish>> =
+        ResponseEntity.ok(restaurantService.getDishes(id))
+
     @PostMapping("/{restaurantId}/dishes")
-    fun addDish(@PathVariable restaurantId: Long, @RequestBody req: DishCreateRequest): ResponseEntity<Any> {
-        return try {
-            val dish = restaurantService.addDish(
-                restaurantId,
-                Dish(name = req.name, description = req.description, price = req.price, isAvailable = req.isAvailable)
-            )
-            ResponseEntity.status(HttpStatus.CREATED).body(dish)
-        } catch (e: RuntimeException) {
-            ResponseEntity.status(404).body(ErrorResponse(404, "Not Found", "Restaurant with id=$restaurantId not found"))
-        }
+    fun addDish(
+        @PathVariable restaurantId: Long,
+        @Valid @RequestBody request: DishCreateRequest
+    ): ResponseEntity<Dish> {
+        val dish = Dish(0, request.name ?: "", request.description ?: "", request.price ?: 0.0, request.isAvailable, restaurantId)
+        return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.addDish(restaurantId, dish))
     }
 }
