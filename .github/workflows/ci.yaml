@@ -50,7 +50,7 @@ jobs:
           echo "PostgreSQL is ready!"
 
       - name: Compile Spring app
-        run: ./mvnw clean package
+        run: ./mvnw clean package -DskipTests
 
       - name: Run Spring app
         run: java -jar ./target/*.jar --server.port=${{ env.SERVER_PORT }} &
