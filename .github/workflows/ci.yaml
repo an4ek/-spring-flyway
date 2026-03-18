@@ -27,4 +27,4 @@ jobs:
         run: ./mvnw clean
 
       - name: Run Spring app tests
-        run: ./mvnw test
+        run: ./mvnw test -Dspring.profiles.active=test
