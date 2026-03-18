@@ -1,7 +1,7 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
   flyway:
     enabled: true
     locations: classpath:db/migration
