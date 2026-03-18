@@ -27,4 +27,4 @@ jobs:
         run: ./mvnw clean
 
       - name: Run Spring app tests
-        run: ./mvnw test -Dspring.profiles.active=test
+        run: ./mvnw test -Dspring.profiles.active=test -e 2>&1 | grep -A5 "relation\|flyway\|Flyway\|SchemaManagement\|ERROR\|WARN.*flyway"
