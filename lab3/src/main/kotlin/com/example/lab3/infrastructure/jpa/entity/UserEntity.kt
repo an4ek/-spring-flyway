@@ -1,42 +1,44 @@
 package com.example.lab3.infrastructure.jpa.entity
 
+import com.example.lab3.domain.model.Role
 import com.example.lab3.domain.model.User
 import jakarta.persistence.*
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 
 @Entity
 @Table(name = "users")
 class UserEntity(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
+    @Column(nullable = false, unique = true)
+    var email: String = "",
 
-    var email: String,
+    @Column(nullable = false)
+    var firstName: String = "",
 
-    var firstName: String,
+    @Column(nullable = false)
+    var lastName: String = "",
 
-    var lastName: String,
+    @Column(nullable = false)
+    var isActive: Boolean = true,
 
-    var isActive: Boolean
-) {
+    @Column(name = "password", nullable = false)
+    var hashedPassword: String = "",
 
-    fun toDomain(): User =
-        User(
-            id = this.id ?: 0,
-            email = this.email,
-            firstName = this.firstName,
-            lastName = this.lastName,
-            isActive = this.isActive
-        )
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    var role: Role = Role.USER
+) : UserDetails {
 
-    companion object {
-        fun fromDomain(user: User): UserEntity =
-            UserEntity(
-                id = if (user.id == 0L) null else user.id,
-                email = user.email,
-                firstName = user.firstName,
-                lastName = user.lastName,
-                isActive = user.isActive
-            )
-    }
+    override fun getAuthorities(): Collection<GrantedAuthority> =
+        listOf(SimpleGrantedAuthority("ROLE_${role.name}"))
+
+    override fun getPassword(): String = hashedPassword
+
+    override fun getUsername(): String = email
+
+    fun toDomain(): User = User(id, email, firstName, lastName, isActive, role)
 }
