@@ -1,11 +1,16 @@
 package com.example.lab3.web.controller
 
+import com.example.lab3.application.service.DishService
 import com.example.lab3.application.service.RestaurantService
 import com.example.lab3.domain.model.Dish
 import com.example.lab3.domain.model.Restaurant
 import com.example.lab3.web.dto.DishCreateRequest
 import com.example.lab3.web.dto.RestaurantCreateRequest
 import com.example.lab3.web.dto.RestaurantUpdateRequest
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,47 +19,82 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/restaurants")
-class RestaurantController(private val restaurantService: RestaurantService) {
+@Tag(name = "Restaurants", description = "Управление ресторанами")
+class RestaurantController(
+    private val restaurantService: RestaurantService,
+    private val dishService: DishService
+) {
 
     @GetMapping
-    fun getAll(): ResponseEntity<List<Restaurant>> = ResponseEntity.ok(restaurantService.findAll())
+    @Operation(summary = "Получить список всех ресторанов")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Список ресторанов")
+    ])
+    fun getAll(): ResponseEntity<List<Restaurant>> =
+        ResponseEntity.ok(restaurantService.findAll())
 
     @GetMapping("/{id}")
+    @Operation(summary = "Получить ресторан по ID")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Ресторан найден"),
+        ApiResponse(responseCode = "404", description = "Ресторан не найден")
+    ])
     fun getById(@PathVariable id: Long): ResponseEntity<Restaurant> =
         ResponseEntity.ok(restaurantService.findById(id))
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Создать ресторан (только ADMIN)")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "201", description = "Ресторан создан"),
+        ApiResponse(responseCode = "400", description = "Невалидные данные"),
+        ApiResponse(responseCode = "401", description = "Не аутентифицирован"),
+        ApiResponse(responseCode = "403", description = "Нет прав"),
+        ApiResponse(responseCode = "409", description = "Ресторан с таким именем уже существует")
+    ])
     fun create(@Valid @RequestBody request: RestaurantCreateRequest): ResponseEntity<Restaurant> {
-        val restaurant = Restaurant(0, request.name, request.address)
-        return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.create(restaurant))
+        val restaurant = restaurantService.create(
+            Restaurant(0, request.name.orEmpty(), request.address.orEmpty())
+        )
+        return ResponseEntity.status(HttpStatus.CREATED).body(restaurant)
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    fun update(@PathVariable id: Long, @Valid @RequestBody request: RestaurantUpdateRequest): ResponseEntity<Restaurant> {
-        val restaurant = Restaurant(id, request.name, request.address)
-        return ResponseEntity.ok(restaurantService.update(id, restaurant))
-    }
+    @Operation(summary = "Обновить ресторан (только ADMIN)")
+    fun update(
+        @PathVariable id: Long,
+        @Valid @RequestBody request: RestaurantUpdateRequest
+    ): ResponseEntity<Restaurant> =
+        ResponseEntity.ok(
+            restaurantService.update(id, Restaurant(id, request.name.orEmpty(), request.address.orEmpty()))
+        )
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Удалить ресторан (только ADMIN)")
     fun delete(@PathVariable id: Long): ResponseEntity<Void> {
         restaurantService.delete(id)
         return ResponseEntity.noContent().build()
     }
 
     @GetMapping("/{id}/dishes")
-    fun getDishes(@PathVariable id: Long): ResponseEntity<List<Dish>> =
-        ResponseEntity.ok(restaurantService.getDishes(id))
+    @Operation(summary = "Получить меню ресторана")
+    fun getDishes(@PathVariable id: Long): ResponseEntity<List<Dish>> {
+        restaurantService.findById(id)
+        return ResponseEntity.ok(dishService.findAll().filter { it.restaurantId == id })
+    }
 
-    @PostMapping("/{restaurantId}/dishes")
+    @PostMapping("/{id}/dishes")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Добавить блюдо в ресторан (только ADMIN)")
     fun addDish(
-        @PathVariable restaurantId: Long,
+        @PathVariable id: Long,
         @Valid @RequestBody request: DishCreateRequest
     ): ResponseEntity<Dish> {
-        val dish = Dish(0, request.name ?: "", request.description ?: "", request.price ?: 0.0, request.isAvailable, restaurantId)
-        return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.addDish(restaurantId, dish))
+        restaurantService.findById(id)
+        val dish = Dish(0, request.name.orEmpty(), request.description.orEmpty(), request.price ?: 0.0, request.isAvailable ?: true, id)
+        val (created, _) = dishService.createOrFind(dish)
+        return ResponseEntity.status(HttpStatus.CREATED).body(created)
     }
 }

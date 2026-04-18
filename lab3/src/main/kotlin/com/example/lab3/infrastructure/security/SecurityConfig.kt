@@ -48,6 +48,9 @@ class SecurityConfig(
             }
             authorizeHttpRequests {
                 authorize("/auth/**", permitAll)
+                authorize("/swagger-ui/**", permitAll)
+                authorize("/swagger-ui.html", permitAll)
+                authorize("/v3/api-docs/**", permitAll)
                 authorize(HttpMethod.GET, "/api/v1/restaurants/**", permitAll)
                 authorize(HttpMethod.GET, "/api/v1/restaurants", permitAll)
                 authorize(HttpMethod.GET, "/api/v1/dishes/**", permitAll)
