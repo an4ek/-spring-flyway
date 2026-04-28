@@ -13,6 +13,19 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   app:
     build: .
     ports:
@@ -23,8 +36,12 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       JWT_SECRET: ${JWT_SECRET:-supersecretkey1234567890abcdef1234567890abcdef}
       JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
 
   pgadmin:
@@ -37,3 +54,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+volumes:
+  redis_data:
