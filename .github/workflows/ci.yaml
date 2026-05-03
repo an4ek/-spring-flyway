@@ -55,3 +55,7 @@ jobs:
           SPRING_DATA_REDIS_PORT: 6379
           JWT_SECRET: supersecretkey1234567890abcdef1234567890abcdef
           JWT_EXPIRATION: 86400000
+
+      - name: Print surefire reports on failure
+        if: failure()
+        run: cat target/surefire-reports/*.txt | head -100
