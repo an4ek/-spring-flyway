@@ -35,17 +35,13 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Load .env
-        run: cat .env >> $GITHUB_ENV
-
-      - name: Compile Spring app
-        run: ./mvnw clean
-
       - name: Run Spring app tests
-        run: ./mvnw test
+        run: ./mvnw test -Dspring.profiles.active=test
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
           SPRING_DATASOURCE_USERNAME: postgres
           SPRING_DATASOURCE_PASSWORD: postgres
           SPRING_DATA_REDIS_HOST: localhost
           SPRING_DATA_REDIS_PORT: 6370
+          JWT_SECRET: supersecretkey1234567890abcdef1234567890abcdef
+          JWT_EXPIRATION: 86400000
