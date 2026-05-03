@@ -8,8 +8,8 @@ import redis.embedded.RedisServer
 @TestConfiguration
 class EmbeddedRedisConfig {
 
-    @Value("\${spring.data.redis.port:6370}")
-    private var redisPort: Int = 6370
+    @Value("\${spring.data.redis.port:6379}")
+    private var redisPort: Int = 6379
 
     @Value("\${use.embedded.redis:true}")
     private var useEmbeddedRedis: Boolean = true

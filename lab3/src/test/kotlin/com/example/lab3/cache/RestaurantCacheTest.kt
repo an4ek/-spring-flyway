@@ -23,7 +23,7 @@ import org.springframework.web.context.WebApplicationContext
 @Import(EmbeddedRedisConfig::class)
 @TestPropertySource(properties = [
     "spring.data.redis.host=localhost",
-    "spring.data.redis.port=6370"
+    "spring.data.redis.port=6379"
 ])
 class RestaurantCacheTest {
 
