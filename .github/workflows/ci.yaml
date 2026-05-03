@@ -25,6 +25,16 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,12 +46,12 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Spring app tests
-        run: ./mvnw test -Dspring.profiles.active=test
+        run: ./mvnw test -Dspring.profiles.active=test -Duse.embedded.redis=false
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
           SPRING_DATASOURCE_USERNAME: postgres
           SPRING_DATASOURCE_PASSWORD: postgres
           SPRING_DATA_REDIS_HOST: localhost
-          SPRING_DATA_REDIS_PORT: 6370
+          SPRING_DATA_REDIS_PORT: 6379
           JWT_SECRET: supersecretkey1234567890abcdef1234567890abcdef
           JWT_EXPIRATION: 86400000
