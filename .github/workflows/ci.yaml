@@ -46,7 +46,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Flyway migrations
-        run: ./mvnw flyway:migrate -pl lab3
+        run: ./mvnw flyway:migrate
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
           SPRING_DATASOURCE_USERNAME: postgres
