@@ -60,4 +60,6 @@ jobs:
 
       - name: Print surefire reports on failure
         if: failure()
-        run: find target/surefire-reports -name "*.txt" | xargs grep -l "500\|Exception\|ERROR" 2>/dev/null | head -3 | xargs cat 2>/dev/null | head -150
+        run: |
+          find target/surefire-reports -name "*.dumpstream" | head -3 | xargs cat 2>/dev/null | head -100
+          find target/surefire-reports -name "*.txt" | xargs grep -l "500\|Exception\|ERROR" 2>/dev/null | head -2 | xargs cat 2>/dev/null | grep -A10 "Caused by" | head -50
