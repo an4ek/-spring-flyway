@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.CacheManager
 import org.springframework.cache.interceptor.SimpleKey
 import org.springframework.context.annotation.Import
+import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
@@ -28,6 +29,9 @@ class RestaurantCacheTest {
     @Autowired
     lateinit var cacheManager: CacheManager
 
+    @Autowired
+    lateinit var redisConnectionFactory: RedisConnectionFactory
+
     private val mockMvc: MockMvc by lazy {
         MockMvcBuilders.webAppContextSetup(context).build()
     }
@@ -36,6 +40,7 @@ class RestaurantCacheTest {
 
     @BeforeEach
     fun clearCache() {
+        redisConnectionFactory.connection.serverCommands().flushAll()
         cacheManager.cacheNames.forEach { cacheManager.getCache(it)?.clear() }
     }
 
@@ -43,8 +48,7 @@ class RestaurantCacheTest {
     fun `повторный GET restaurants не идёт в БД - кэш-хит`() {
         mockMvc.get("/api/v1/restaurants").andExpect { status { isOk() } }
         mockMvc.get("/api/v1/restaurants").andExpect { status { isOk() } }
-        val cache = cacheManager.getCache("restaurants")
-        assertNotNull(cache?.get(SimpleKey.EMPTY))
+        assertNotNull(cacheManager.getCache("restaurants")?.get(SimpleKey.EMPTY))
     }
 
     @Test
@@ -58,7 +62,9 @@ class RestaurantCacheTest {
             content = """{"name": "Cache Test ${System.currentTimeMillis()}", "address": "ул. Теста, 1"}"""
         }.andExpect { status { isCreated() } }
 
-        assertNull(cacheManager.getCache("restaurants")?.get(SimpleKey.EMPTY))
+        // Проверяем через Redis напрямую что ключ удалён
+        val keys = redisConnectionFactory.connection.keyCommands().keys("restaurants*".toByteArray()) ?: emptyList()
+        assertTrue(keys.isEmpty(), "Кэш должен быть пуст после создания")
     }
 
     @Test
@@ -76,6 +82,7 @@ class RestaurantCacheTest {
 
         mockMvc.delete("/api/v1/restaurants/$id").andExpect { status { isNoContent() } }
 
-        assertNull(cacheManager.getCache("restaurants")?.get(SimpleKey.EMPTY))
+        val keys = redisConnectionFactory.connection.keyCommands().keys("restaurants*".toByteArray()) ?: emptyList()
+        assertTrue(keys.isEmpty(), "Кэш должен быть пуст после удаления")
     }
 }
