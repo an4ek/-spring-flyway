@@ -11,15 +11,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     enabled: true
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/postgres}
-    user: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     locations: classpath:db/migration
-    baseline-on-migrate: true
-    baseline-version: 0
+    clean-disabled: false
   cache:
     type: redis
 
@@ -27,4 +22,4 @@ logging:
   level:
     root: WARN
     com.example.lab3: DEBUG
-    org.flywaydb: DEBUG
+    org.flywaydb: INFO

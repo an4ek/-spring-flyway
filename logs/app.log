@@ -93,3 +93,33 @@ You may wish to exclude one of them to ensure predictable runtime behavior
 2026-05-04 12:42:38.468 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
 2026-05-04 12:42:38.536 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Conflict: Ресторан 'Duplicate Restaurant 1777873358527' уже существует
 2026-05-04 12:42:38.565 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-05-04 13:53:33.781 [main] WARN  o.s.b.t.j.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer - 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/Users/anna/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+	jar:file:/Users/anna/.m2/repository/org/json/json/20250517/json-20250517.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2026-05-04 13:53:36.619 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-04 13:53:39.348 [main] WARN  i.n.r.d.DnsServerAddressStreamProviders - Can not find io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider in the classpath, fallback to system defaults. This may result in incorrect DNS resolutions on MacOS. Check whether you have a dependency on 'io.netty:netty-resolver-dns-native-macos'
+2026-05-04 13:53:39.504 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-04 13:53:40.995 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-05-04 13:53:41.064 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Conflict: Ресторан 'Duplicate Restaurant 1777877621056' уже существует
+2026-05-04 13:53:41.094 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-05-04 13:54:15.386 [main] WARN  o.s.b.t.j.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer - 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/Users/anna/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+	jar:file:/Users/anna/.m2/repository/org/json/json/20250517/json-20250517.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2026-05-04 13:54:16.573 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-04 13:54:17.678 [main] WARN  i.n.r.d.DnsServerAddressStreamProviders - Can not find io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider in the classpath, fallback to system defaults. This may result in incorrect DNS resolutions on MacOS. Check whether you have a dependency on 'io.netty:netty-resolver-dns-native-macos'
+2026-05-04 13:54:17.807 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-04 13:54:18.851 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-05-04 13:54:18.929 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Conflict: Ресторан 'Duplicate Restaurant 1777877658918' уже существует
+2026-05-04 13:54:18.961 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
