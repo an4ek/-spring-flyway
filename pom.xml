@@ -169,6 +169,9 @@
             <testResource>
                 <directory>lab3/src/test/resources</directory>
             </testResource>
+            <testResource>
+                <directory>lab3/src/main/resources</directory>
+            </testResource>
         </testResources>
         <plugins>
             <plugin>

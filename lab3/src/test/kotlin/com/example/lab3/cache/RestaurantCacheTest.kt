@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.CacheManager
 import org.springframework.cache.interceptor.SimpleKey
 import org.springframework.context.annotation.Import
+import com.example.lab3.config.TestFlywayConfig
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
@@ -20,7 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import(EmbeddedRedisConfig::class)
+@Import(EmbeddedRedisConfig::class, TestFlywayConfig::class)
 class RestaurantCacheTest {
 
     @Autowired

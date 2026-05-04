@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.context.annotation.Import
+import com.example.lab3.config.TestFlywayConfig
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
@@ -19,7 +20,7 @@ import org.springframework.web.context.WebApplicationContext
 import com.example.lab3.cache.EmbeddedRedisConfig
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Import(EmbeddedRedisConfig::class)
+@Import(EmbeddedRedisConfig::class, TestFlywayConfig::class)
 class RestaurantIntegrationTest {
 
     companion object {

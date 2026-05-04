@@ -46,7 +46,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Spring app tests
-        run: ./mvnw clean flyway:migrate test -Duse.embedded.redis=false
+        run: ./mvnw test -Dspring.profiles.active=test -Duse.embedded.redis=false
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
           SPRING_DATASOURCE_USERNAME: postgres
@@ -60,6 +60,4 @@ jobs:
 
       - name: Print surefire reports on failure
         if: failure()
-        run: |
-          find . -name "*.txt" -path "*/surefire-reports/*" | head -5
-          find . -name "*.txt" -path "*/surefire-reports/*" | xargs grep -l "Caused\|ERROR\|500" 2>/dev/null | head -2 | xargs cat 2>/dev/null | grep -B2 -A10 "Caused by" | head -50
+        run: find . -name "*.txt" -path "*/surefire-reports/*" | xargs grep -l "Caused\|ERROR\|500" 2>/dev/null | head -2 | xargs cat 2>/dev/null | grep -B2 -A10 "Caused by" | head -50
