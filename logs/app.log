@@ -915,3 +915,17 @@ You may wish to exclude one of them to ensure predictable runtime behavior
 2026-05-04 14:15:56.928 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
 2026-05-04 14:15:57.006 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Conflict: Ресторан 'Duplicate Restaurant 1777878956996' уже существует
 2026-05-04 14:15:57.039 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-05-04 14:38:06.420 [main] WARN  o.s.b.t.j.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer - 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/Users/anna/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+	jar:file:/Users/anna/.m2/repository/org/json/json/20250517/json-20250517.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2026-05-04 14:38:10.138 [main] WARN  i.n.r.d.DnsServerAddressStreamProviders - Can not find io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider in the classpath, fallback to system defaults. This may result in incorrect DNS resolutions on MacOS. Check whether you have a dependency on 'io.netty:netty-resolver-dns-native-macos'
+2026-05-04 14:38:10.273 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-04 14:38:11.391 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-05-04 14:38:11.466 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Conflict: Ресторан 'Duplicate Restaurant 1777880291456' уже существует
+2026-05-04 14:38:11.499 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
