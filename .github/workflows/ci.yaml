@@ -46,7 +46,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Spring app tests
-        run: ./mvnw test -Dspring.profiles.active=test -Duse.embedded.redis=false
+        run: ./mvnw test -Dspring.profiles.active=test -Duse.embedded.redis=false 2>&1 | grep -E "ERROR|Caused by|RedisConnection|Unable to connect|WARN.*Redis" | head -30 || true
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
           SPRING_DATASOURCE_USERNAME: postgres
@@ -58,8 +58,15 @@ jobs:
           JWT_SECRET: supersecretkey1234567890abcdef1234567890abcdef
           JWT_EXPIRATION: 86400000
 
-      - name: Print surefire reports on failure
-        if: failure()
-        run: |
-          find target/surefire-reports -name "*.dumpstream" | head -3 | xargs cat 2>/dev/null | head -100
-          find target/surefire-reports -name "*.txt" | xargs grep -l "500\|Exception\|ERROR" 2>/dev/null | head -2 | xargs cat 2>/dev/null | grep -A10 "Caused by" | head -50
+      - name: Run tests for real
+        run: ./mvnw test -Dspring.profiles.active=test -Duse.embedded.redis=false
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          SPRING_DATA_REDIS_HOST: localhost
+          SPRING_DATA_REDIS_PORT: 6379
+          JWT_SECRET: supersecretkey1234567890abcdef1234567890abcdef
+          JWT_EXPIRATION: 86400000
