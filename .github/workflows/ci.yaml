@@ -46,7 +46,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Spring app tests
-        run: ./mvnw test -Duse.embedded.redis=false
+        run: ./mvnw clean flyway:migrate test -Duse.embedded.redis=false
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
           SPRING_DATASOURCE_USERNAME: postgres
