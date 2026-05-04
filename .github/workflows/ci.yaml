@@ -46,14 +46,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Flyway migrations
-        run: ./mvnw flyway:migrate
-        env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
-          SPRING_DATASOURCE_USERNAME: postgres
-          SPRING_DATASOURCE_PASSWORD: postgres
-          SPRING_FLYWAY_URL: jdbc:postgresql://localhost:5432/postgres
-          SPRING_FLYWAY_USER: postgres
-          SPRING_FLYWAY_PASSWORD: postgres
+        run: ./mvnw flyway:migrate -Dflyway.url=jdbc:postgresql://localhost:5432/postgres -Dflyway.user=postgres -Dflyway.password=postgres -Dflyway.locations=classpath:db/migration
 
       - name: Run Spring app tests
         run: ./mvnw test -Dspring.profiles.active=test -Duse.embedded.redis=false
