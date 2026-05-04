@@ -1,0 +1,5 @@
+2026-04-18 15:57:55.904 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-18 15:57:56.993 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-04-18 15:57:57.169 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Conflict: Ресторан 'Duplicate Restaurant 1776502677140' уже существует
+2026-04-18 15:57:57.220 [main] WARN  c.e.l.w.e.GlobalExceptionHandler - Not found: Ресторан с id=999999 не найден
+2026-04-18 15:57:57.224 [main] WARN  o.j.j.e.d.AbstractExtensionContext - Type implements CloseableResource but not AutoCloseable: org.testcontainers.junit.jupiter.TestcontainersExtension$StoreAdapter

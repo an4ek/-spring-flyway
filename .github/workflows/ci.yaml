@@ -10,6 +10,31 @@ jobs:
   check-tasks:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,17 +45,19 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
+      - name: Run Spring app tests
+        run: ./mvnw test -Dspring.profiles.active=test -Duse.embedded.redis=false
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          SPRING_DATA_REDIS_HOST: localhost
+          SPRING_DATA_REDIS_PORT: 6379
+          JWT_SECRET: supersecretkey1234567890abcdef1234567890abcdef
+          JWT_EXPIRATION: 86400000
 
-      - name: Grant scripts permition
-        run: chmod +x ./mvnw ./.test/run-test.sh
-
-      - name: Compile Spring app
-        run: ./mvnw clean package
-
-      - name: Run Spring app
-        run: java -jar ./target/*.jar &
-
-      - name: Run tests
-        run: ./.test/run-test.sh
+      - name: Print surefire reports on failure
+        if: failure()
+        run: find . -name "*.txt" -path "*/surefire-reports/*" | xargs grep -l "Caused\|ERROR\|500" 2>/dev/null | head -2 | xargs cat 2>/dev/null | grep -B2 -A10 "Caused by" | head -50

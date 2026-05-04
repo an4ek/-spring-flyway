@@ -1,4 +1,7 @@
 package com.example.lab3.web.exception
 
-class NotFoundException(message: String) : RuntimeException(message)
-class ValidationException(message: String) : RuntimeException(message)
+sealed class AppException(message: String) : RuntimeException(message)
+
+class NotFoundException(message: String) : AppException(message)
+class AlreadyExistsException(message: String) : AppException(message)
+class InvalidOrderStateException(message: String) : AppException(message)
