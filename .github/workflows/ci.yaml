@@ -45,6 +45,9 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Verify Redis
+        run: redis-cli -h localhost -p 6379 ping
+
       - name: Run Spring app tests
         run: ./mvnw test -Dspring.profiles.active=test -Duse.embedded.redis=false
         env:
@@ -58,4 +61,4 @@ jobs:
 
       - name: Print surefire reports on failure
         if: failure()
-        run: cat target/surefire-reports/*.txt | head -100
+        run: find target/surefire-reports -name "*.txt" | xargs grep -l "500\|Exception\|ERROR" | head -3 | xargs cat | head -150
