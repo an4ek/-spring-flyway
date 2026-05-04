@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
@@ -21,10 +20,6 @@ import com.example.lab3.cache.EmbeddedRedisConfig
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Import(EmbeddedRedisConfig::class)
-@TestPropertySource(properties = [
-    "spring.data.redis.host=localhost",
-    "spring.data.redis.port=6379"
-])
 class RestaurantIntegrationTest {
 
     companion object {
