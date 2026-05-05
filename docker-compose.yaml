@@ -38,6 +38,8 @@ services:
       JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
     depends_on:
       postgres:
         condition: service_healthy
@@ -54,6 +56,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 
 volumes:
   redis_data:

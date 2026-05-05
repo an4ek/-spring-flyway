@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service
 class OrderService(
     private val orderRepository: OrderRepositoryPort,
     private val userRepository: UserRepositoryPort,
-    private val dishRepository: DishRepositoryPort
+    private val dishRepository: DishRepositoryPort,
+    private val notificationService: NotificationService
 ) {
-
     private val logger = KotlinLogging.logger {}
 
     private val allowedTransitions = mapOf(
@@ -35,23 +35,23 @@ class OrderService(
     }
 
     fun create(userId: Long, dishIds: List<Long>): Order {
-    userRepository.findById(userId)
-        ?: throw IllegalArgumentException("Пользователь с id=$userId не найден")
-    val dishes = dishIds.map { dishId ->
-        dishRepository.findById(dishId)
-            ?: throw IllegalArgumentException("Блюдо с id=$dishId не найдено")
+        userRepository.findById(userId)
+            ?: throw IllegalArgumentException("Пользователь с id=$userId не найден")
+        val dishes = dishIds.map { dishId ->
+            dishRepository.findById(dishId)
+                ?: throw IllegalArgumentException("Блюдо с id=$dishId не найдено")
+        }
+        val order = Order(
+            id = 0,
+            userId = userId,
+            status = OrderStatus.PENDING,
+            createdAt = java.time.LocalDateTime.now(),
+            dishes = dishes
+        )
+        val created = orderRepository.create(order)
+        logger.info { "Создан заказ: id=${created.id}, userId=$userId" }
+        return created
     }
-    val order = Order(
-        id = 0,
-        userId = userId,
-        status = com.example.lab3.domain.model.OrderStatus.PENDING,
-        createdAt = java.time.LocalDateTime.now(),
-        dishes = dishes
-    )
-    val created = orderRepository.create(order)
-    logger.info { "Создан заказ: id=${created.id}, userId=$userId" }
-    return created
-}
 
     fun updateStatus(id: Long, newStatus: OrderStatus): Order {
         val order = orderRepository.findById(id)
@@ -64,6 +64,12 @@ class OrderService(
         }
         val updated = orderRepository.updateStatus(id, newStatus)
         logger.info { "Статус заказа id=$id изменён: ${order.status} -> $newStatus" }
+
+        val user = userRepository.findById(order.userId)
+        if (user != null) {
+            notificationService.sendOrderStatusUpdate(user.email, id, newStatus.name)
+        }
+
         return updated
     }
 }

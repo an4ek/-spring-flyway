@@ -10,6 +10,7 @@ import com.example.lab3.infrastructure.jpa.repository.DishJpaRepository
 import com.example.lab3.infrastructure.jpa.repository.OrderJpaRepository
 import com.example.lab3.infrastructure.jpa.repository.UserJpaRepository
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class OrderJpaAdapter(
@@ -69,4 +70,7 @@ class OrderJpaAdapter(
         entity.status = status.name
         return orderJpaRepository.save(entity).toDomain()
     }
+
+    override fun findByStatusAndCreatedBefore(status: OrderStatus, before: LocalDateTime): List<Order> =
+        orderJpaRepository.findByStatusAndCreatedBefore(status.name, before).map { it.toDomain() }
 }
